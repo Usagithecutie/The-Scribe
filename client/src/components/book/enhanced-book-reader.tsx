@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { Link } from "wouter";
 import { useTheme } from "@/components/theme-provider";
-import { bookSections } from "@/shared/book-content";
+import { bookSections } from "@shared/book-content";
 
 interface EnhancedBookReaderProps {
   initialSectionId?: string;

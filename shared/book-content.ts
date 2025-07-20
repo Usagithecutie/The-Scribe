@@ -1043,3 +1043,6 @@ export const categories = [
   "You Are a Poem",
   "Final Message"
 ];
+
+// Export alias for compatibility with the enhanced book reader
+export const bookSections = bookContent;
