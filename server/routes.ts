@@ -126,6 +126,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Writing prompts routes
+  app.get("/api/writing-prompts", async (req, res) => {
+    try {
+      const category = req.query.category as string;
+      const prompts = category 
+        ? await storage.getWritingPromptsByCategory(category)
+        : await storage.getAllWritingPrompts();
+      res.json(prompts);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch writing prompts" });
+    }
+  });
+
+  app.get("/api/writing-prompts/random", async (req, res) => {
+    try {
+      const prompt = await storage.getRandomWritingPrompt();
+      if (!prompt) {
+        return res.status(404).json({ message: "No prompts available" });
+      }
+      res.json(prompt);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch random prompt" });
+    }
+  });
+
+  // Advice entries routes
+  app.get("/api/advice", async (req, res) => {
+    try {
+      const category = req.query.category as string;
+      const entries = category 
+        ? await storage.getAdviceEntriesByCategory(category)
+        : await storage.getAllAdviceEntries();
+      res.json(entries);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch advice entries" });
+    }
+  });
+
+  app.get("/api/advice/random", async (req, res) => {
+    try {
+      const entry = await storage.getRandomAdviceEntry();
+      if (!entry) {
+        return res.status(404).json({ message: "No advice available" });
+      }
+      res.json(entry);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch random advice" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

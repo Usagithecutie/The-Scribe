@@ -3,12 +3,15 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Sidebar } from "@/components/sidebar/sidebar";
 import { Toolbar } from "@/components/editor/toolbar";
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
+import { WritingPrompts } from "@/components/prompts/writing-prompts";
+import { AdviceBoard } from "@/components/advice/advice-board";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
-import { Document, InsertDocument, UpdateDocument } from "@shared/schema";
-import { Menu, Sun, Moon } from "lucide-react";
+import { Document, InsertDocument, UpdateDocument, WritingPrompt } from "@shared/schema";
+import { Menu, Sun, Moon, PenTool, Heart, Sparkles } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { apiRequest } from "@/lib/queryClient";
 import { useEditor } from "@/components/editor/rich-text-editor";
@@ -20,6 +23,7 @@ export default function EditorPage() {
   const [documentContent, setDocumentContent] = useState("");
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
+  const [activeTab, setActiveTab] = useState<string>("editor");
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
 
@@ -117,6 +121,28 @@ export default function EditorPage() {
     setDocumentContent(document.content);
     setWordCount(document.wordCount);
     setCharCount(document.characterCount);
+    setActiveTab("editor");
+  };
+
+  const handleCreateFromPrompt = (prompt: WritingPrompt) => {
+    const promptDocument: InsertDocument = {
+      title: `Inspired by: ${prompt.title}`,
+      content: `<h2>${prompt.title}</h2><p><em>${prompt.content}</em></p><hr><p>Your writing begins here...</p>`,
+      wordCount: 0,
+      characterCount: 0,
+    };
+    
+    createDocumentMutation.mutate(promptDocument, {
+      onSuccess: (newDoc) => {
+        setCurrentDocument(newDoc);
+        setDocumentTitle(newDoc.title);
+        setDocumentContent(newDoc.content);
+        setWordCount(0);
+        setCharCount(0);
+        setActiveTab("editor");
+        toast({ title: "New document created from prompt!" });
+      }
+    });
   };
 
   const handleSave = () => {
@@ -261,42 +287,61 @@ export default function EditorPage() {
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
-          {currentDocument ? (
-            <>
-              {/* Toolbar */}
-              <Toolbar
-                editor={null} // This will be passed from RichTextEditor
-                onSave={handleSave}
-                isSaving={updateDocumentMutation.isPending}
-              />
+          {/* Navigation Tabs */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+            <TabsList className="grid grid-cols-3 w-full max-w-md mx-auto mt-4">
+              <TabsTrigger value="editor" className="flex items-center gap-2">
+                <PenTool className="w-4 h-4" />
+                Editor
+              </TabsTrigger>
+              <TabsTrigger value="prompts" className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4" />
+                Prompts
+              </TabsTrigger>
+              <TabsTrigger value="advice" className="flex items-center gap-2">
+                <Heart className="w-4 h-4" />
+                Advice
+              </TabsTrigger>
+            </TabsList>
 
-              {/* Editor Area */}
-              <div className="flex-1 relative">
-                {/* Celestial background */}
-                <div className="absolute inset-0 opacity-10">
-                  <div className="w-full h-full bg-gradient-to-br from-purple-900/20 via-slate-800/10 to-indigo-900/20">
-                    {/* Subtle star field */}
-                    <svg className="w-full h-full" viewBox="0 0 1000 1000">
-                      <defs>
-                        <radialGradient id="editorStar" cx="0.5" cy="0.5" r="0.5">
-                          <stop offset="0%" style={{stopColor: '#8b5cf6', stopOpacity: 0.6}} />
-                          <stop offset="100%" style={{stopColor: '#8b5cf6', stopOpacity: 0}} />
-                        </radialGradient>
-                      </defs>
-                      <circle cx="200" cy="150" r="1" fill="url(#editorStar)" />
-                      <circle cx="500" cy="200" r="1.5" fill="url(#editorStar)" />
-                      <circle cx="800" cy="180" r="1" fill="url(#editorStar)" />
-                      <circle cx="300" cy="400" r="1" fill="url(#editorStar)" />
-                      <circle cx="700" cy="450" r="1.5" fill="url(#editorStar)" />
-                      <circle cx="150" cy="650" r="1" fill="url(#editorStar)" />
-                      <circle cx="600" cy="700" r="1" fill="url(#editorStar)" />
-                      <circle cx="900" cy="650" r="1.5" fill="url(#editorStar)" />
-                    </svg>
-                  </div>
-                </div>
+            {/* Editor Tab */}
+            <TabsContent value="editor" className="flex-1">
+              {currentDocument ? (
+                <>
+                  {/* Toolbar */}
+                  <Toolbar
+                    editor={null} // This will be passed from RichTextEditor
+                    onSave={handleSave}
+                    isSaving={updateDocumentMutation.isPending}
+                  />
 
-                <div className="relative z-10 h-full p-8">
-                  <div className="max-w-4xl mx-auto h-full">
+                  {/* Editor Area */}
+                  <div className="flex-1 relative">
+                    {/* Celestial background */}
+                    <div className="absolute inset-0 opacity-10">
+                      <div className="w-full h-full bg-gradient-to-br from-purple-900/20 via-slate-800/10 to-indigo-900/20">
+                        {/* Subtle star field */}
+                        <svg className="w-full h-full" viewBox="0 0 1000 1000">
+                          <defs>
+                            <radialGradient id="editorStar" cx="0.5" cy="0.5" r="0.5">
+                              <stop offset="0%" style={{stopColor: '#8b5cf6', stopOpacity: 0.6}} />
+                              <stop offset="100%" style={{stopColor: '#8b5cf6', stopOpacity: 0}} />
+                            </radialGradient>
+                          </defs>
+                          <circle cx="200" cy="150" r="1" fill="url(#editorStar)" />
+                          <circle cx="500" cy="200" r="1.5" fill="url(#editorStar)" />
+                          <circle cx="800" cy="180" r="1" fill="url(#editorStar)" />
+                          <circle cx="300" cy="400" r="1" fill="url(#editorStar)" />
+                          <circle cx="700" cy="450" r="1.5" fill="url(#editorStar)" />
+                          <circle cx="150" cy="650" r="1" fill="url(#editorStar)" />
+                          <circle cx="600" cy="700" r="1" fill="url(#editorStar)" />
+                          <circle cx="900" cy="650" r="1.5" fill="url(#editorStar)" />
+                        </svg>
+                      </div>
+                    </div>
+
+                    <div className="relative z-10 h-full p-8">
+                      <div className="max-w-4xl mx-auto h-full">
                     {/* Document Title */}
                     <Input
                       type="text"
@@ -350,6 +395,18 @@ export default function EditorPage() {
               </div>
             </div>
           )}
+            </TabsContent>
+
+            {/* Writing Prompts Tab */}
+            <TabsContent value="prompts" className="flex-1 p-6 overflow-y-auto">
+              <WritingPrompts onCreateFromPrompt={handleCreateFromPrompt} />
+            </TabsContent>
+
+            {/* Advice Board Tab */}
+            <TabsContent value="advice" className="flex-1 p-6 overflow-y-auto">
+              <AdviceBoard />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
