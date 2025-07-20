@@ -55,11 +55,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/documents/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const success = await storage.deleteDocument(id);
-      if (!success) {
-        return res.status(404).json({ message: "Document not found" });
+      const permanent = req.query.permanent === 'true';
+      
+      if (permanent) {
+        // Permanent deletion
+        const success = await storage.deleteDocument(id);
+        if (!success) {
+          return res.status(404).json({ message: "Document not found" });
+        }
+        res.json({ success: true });
+      } else {
+        // Move to trash
+        const document = await storage.updateDocument(id, { isTrashed: true });
+        if (!document) {
+          return res.status(404).json({ message: "Document not found" });
+        }
+        res.json(document);
       }
-      res.json({ success: true });
     } catch (error) {
       res.status(500).json({ message: "Failed to delete document" });
     }

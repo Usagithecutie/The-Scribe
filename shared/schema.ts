@@ -8,6 +8,9 @@ export const documents = pgTable("documents", {
   content: text("content").notNull().default(""),
   wordCount: integer("word_count").notNull().default(0),
   characterCount: integer("character_count").notNull().default(0),
+  isArchived: boolean("is_archived").notNull().default(false),
+  isTrashed: boolean("is_trashed").notNull().default(false),
+  trashedAt: timestamp("trashed_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

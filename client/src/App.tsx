@@ -3,9 +3,9 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/hooks/use-theme";
 import BirthdayPage from "@/pages/birthday";
-import EditorPage from "@/pages/editor";
+import EnhancedEditor from "@/pages/enhanced-editor";
 import BookReader from "@/pages/book-reader";
 import NotFound from "@/pages/not-found";
 
@@ -13,7 +13,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={BirthdayPage} />
-      <Route path="/editor" component={EditorPage} />
+      <Route path="/editor" component={EnhancedEditor} />
       <Route path="/book" component={BookReader} />
       <Route path="/book/:sectionId" component={BookReader} />
       <Route component={NotFound} />

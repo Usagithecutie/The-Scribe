@@ -1,133 +1,82 @@
-/**
- * Utility functions for the editor
- */
+// Utility functions for the editor
 
-/**
- * Count words in HTML content
- */
 export function countWords(html: string): number {
-  const text = stripHtml(html);
-  if (!text.trim()) return 0;
-  
-  return text
-    .trim()
-    .split(/\s+/)
-    .filter(word => word.length > 0)
-    .length;
+  // Strip HTML tags and count words
+  const text = html.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ');
+  const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+  return words.length;
 }
 
-/**
- * Count characters in HTML content (excluding HTML tags)
- */
-export function countCharacters(html: string): number {
-  const text = stripHtml(html);
-  return text.length;
+export function countCharacters(html: string, includeSpaces = true): number {
+  // Strip HTML tags and count characters
+  const text = html.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ');
+  return includeSpaces ? text.length : text.replace(/\s/g, '').length;
 }
 
-/**
- * Strip HTML tags from content
- */
-export function stripHtml(html: string): string {
-  return html
-    .replace(/<[^>]*>/g, '') // Remove HTML tags
-    .replace(/&nbsp;/g, ' ') // Replace &nbsp; with spaces
-    .replace(/&amp;/g, '&') // Replace &amp; with &
-    .replace(/&lt;/g, '<') // Replace &lt; with <
-    .replace(/&gt;/g, '>') // Replace &gt; with >
-    .replace(/&quot;/g, '"') // Replace &quot; with "
-    .trim();
-}
-
-/**
- * Truncate text to specified length
- */
 export function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
-  
-  const truncated = text.slice(0, maxLength);
-  const lastSpaceIndex = truncated.lastIndexOf(' ');
-  
-  // If there's a space near the end, cut at the space to avoid cutting words
-  if (lastSpaceIndex > maxLength * 0.8) {
-    return truncated.slice(0, lastSpaceIndex) + '...';
-  }
-  
-  return truncated + '...';
+  return text.substring(0, maxLength).trim() + '...';
 }
 
-/**
- * Format date for display (relative time)
- */
 export function formatDateRelative(date: Date): string {
   const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / (1000 * 60));
-  const diffHours = Math.floor(diffMins / 60);
-  const diffDays = Math.floor(diffHours / 24);
-
-  if (diffMins < 1) return 'just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
   
-  return formatDateAbsolute(date);
+  if (diffInSeconds < 60) return 'just now';
+  
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+  
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) return `${diffInHours}h ago`;
+  
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays < 30) return `${diffInDays}d ago`;
+  
+  const diffInMonths = Math.floor(diffInDays / 30);
+  if (diffInMonths < 12) return `${diffInMonths}mo ago`;
+  
+  const diffInYears = Math.floor(diffInMonths / 12);
+  return `${diffInYears}y ago`;
 }
 
-/**
- * Format date for display (absolute)
- */
-export function formatDateAbsolute(date: Date | string): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
-  
-  return dateObj.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: dateObj.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined,
-  });
+export function exportDocumentAsText(title: string, content: string): void {
+  // Strip HTML and create text file
+  const text = content.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ');
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${title.replace(/[^a-z0-9]/gi, '_')}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
-/**
- * Generate a reading time estimate
- */
-export function estimateReadingTime(wordCount: number): string {
-  const wordsPerMinute = 200; // Average reading speed
-  const minutes = Math.ceil(wordCount / wordsPerMinute);
+export function exportDocumentAsHTML(title: string, content: string): void {
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>${title}</title>
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.6; max-width: 800px; margin: 40px auto; padding: 20px; }
+        h1, h2, h3, h4, h5, h6 { color: #333; }
+        blockquote { border-left: 4px solid #6366f1; padding-left: 20px; margin: 20px 0; font-style: italic; }
+        code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-family: 'Monaco', monospace; }
+    </style>
+</head>
+<body>
+    <h1>${title}</h1>
+    ${content}
+</body>
+</html>`;
   
-  if (minutes < 1) return 'Less than 1 min read';
-  if (minutes === 1) return '1 min read';
-  return `${minutes} min read`;
-}
-
-/**
- * Generate excerpt from content
- */
-export function generateExcerpt(content: string, maxWords: number = 30): string {
-  const text = stripHtml(content);
-  const words = text.split(/\s+/).filter(word => word.length > 0);
-  
-  if (words.length <= maxWords) return text;
-  
-  return words.slice(0, maxWords).join(' ') + '...';
-}
-
-/**
- * Calculate reading progress percentage
- */
-export function calculateReadingProgress(
-  currentPosition: number,
-  totalHeight: number
-): number {
-  return Math.min(100, Math.max(0, (currentPosition / totalHeight) * 100));
-}
-
-/**
- * Sanitize filename for export
- */
-export function sanitizeFilename(filename: string): string {
-  return filename
-    .replace(/[^\w\s-]/gi, '') // Remove special characters
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Replace multiple hyphens with single
-    .toLowerCase()
-    .trim();
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${title.replace(/[^a-z0-9]/gi, '_')}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
 }

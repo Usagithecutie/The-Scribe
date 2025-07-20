@@ -74,6 +74,9 @@ export class MemStorage implements IStorage {
 <p>This is your creative haven. Write your heart out. 💜</p>`,
       wordCount: 95,
       characterCount: 620,
+      isArchived: false,
+      isTrashed: false,
+      trashedAt: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -228,6 +231,9 @@ export class MemStorage implements IStorage {
       content: insertDoc.content || "",
       wordCount: insertDoc.wordCount || 0,
       characterCount: insertDoc.characterCount || 0,
+      isArchived: insertDoc.isArchived || false,
+      isTrashed: insertDoc.isTrashed || false,
+      trashedAt: insertDoc.isTrashed ? now : null,
       createdAt: now,
       updatedAt: now,
     };
@@ -249,13 +255,17 @@ export class MemStorage implements IStorage {
     const doc = this.documents.get(id);
     if (!doc) return undefined;
 
+    const now = new Date();
     const updatedDoc: Document = {
       ...doc,
       title: updates.title ?? doc.title,
       content: updates.content ?? doc.content,
       wordCount: updates.wordCount ?? doc.wordCount,
       characterCount: updates.characterCount ?? doc.characterCount,
-      updatedAt: new Date(),
+      isArchived: updates.isArchived ?? doc.isArchived,
+      isTrashed: updates.isTrashed ?? doc.isTrashed,
+      trashedAt: updates.isTrashed && !doc.isTrashed ? now : (updates.isTrashed === false ? null : doc.trashedAt),
+      updatedAt: now,
     };
     
     this.documents.set(id, updatedDoc);
