@@ -1,119 +1,201 @@
-import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shuffle, PenTool, BookOpen, Heart } from "lucide-react";
-import { WritingPrompt } from "@shared/schema";
+import { Sparkles, PenTool, Heart, Lightbulb, Coffee, Star } from "lucide-react";
+
+export interface WritingPrompt {
+  id: string;
+  title: string;
+  content: string;
+  category: "Personal" | "Creative" | "Emotional" | "Reflective" | "Daily";
+  difficulty: "Easy" | "Medium" | "Deep";
+}
+
+const prompts: WritingPrompt[] = [
+  {
+    id: "letter-to-younger-self",
+    title: "Letter to Your Younger Self",
+    content: "Write a compassionate letter to yourself at age 16. What would you tell them about love, dreams, and the journey ahead?",
+    category: "Personal",
+    difficulty: "Deep"
+  },
+  {
+    id: "moment-of-peace",
+    title: "A Moment of Perfect Peace",
+    content: "Describe a moment when you felt completely at peace. What made it special? How can you create more moments like this?",
+    category: "Reflective",
+    difficulty: "Medium"
+  },
+  {
+    id: "gratitude-letter",
+    title: "Gratitude Letter",
+    content: "Write a thank you letter to someone who changed your life. Tell them exactly how they impacted you.",
+    category: "Emotional",
+    difficulty: "Medium"
+  },
+  {
+    id: "dream-conversation",
+    title: "Conversation with Your Dreams",
+    content: "If your dreams could speak, what would they tell you? Write a dialogue between you and your deepest aspirations.",
+    category: "Creative",
+    difficulty: "Deep"
+  },
+  {
+    id: "morning-ritual",
+    title: "Your Perfect Morning",
+    content: "Design your ideal morning routine. What would make you feel most alive and ready for the day?",
+    category: "Daily",
+    difficulty: "Easy"
+  },
+  {
+    id: "love-story",
+    title: "A Love Story to Remember",
+    content: "Write about a love story - it could be romantic, familial, or self-love. What made it beautiful and lasting?",
+    category: "Emotional",
+    difficulty: "Medium"
+  },
+  {
+    id: "future-self",
+    title: "Message from Future You",
+    content: "Imagine your future self sending you a message. What wisdom would they share about your current challenges?",
+    category: "Reflective",
+    difficulty: "Deep"
+  },
+  {
+    id: "simple-joy",
+    title: "The Smallest Joy",
+    content: "Write about a tiny moment that brought you unexpected happiness. Why do small things matter so much?",
+    category: "Daily",
+    difficulty: "Easy"
+  }
+];
+
+const categoryColors = {
+  Personal: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
+  Creative: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200",
+  Emotional: "bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200",
+  Reflective: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200",
+  Daily: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+};
+
+const difficultyIcons = {
+  Easy: Coffee,
+  Medium: Lightbulb,
+  Deep: Star
+};
 
 interface WritingPromptsProps {
-  onCreateFromPrompt: (prompt: WritingPrompt) => void;
+  onCreateFromPrompt?: (prompt: WritingPrompt) => void;
 }
 
 export function WritingPrompts({ onCreateFromPrompt }: WritingPromptsProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const { data: allPrompts = [] } = useQuery<WritingPrompt[]>({
-    queryKey: ["/api/writing-prompts"],
-  });
-
-  const { data: randomPrompt, refetch: getRandomPrompt } = useQuery<WritingPrompt>({
-    queryKey: ["/api/writing-prompts/random"],
-    enabled: false,
-  });
-
-  const filteredPrompts = selectedCategory === "all" 
-    ? allPrompts 
-    : allPrompts.filter(prompt => prompt.category.toLowerCase() === selectedCategory);
-
-  const categories = Array.from(new Set(allPrompts.map(p => p.category)));
+  const categories = Array.from(new Set(prompts.map(p => p.category)));
+  const filteredPrompts = selectedCategory 
+    ? prompts.filter(p => p.category === selectedCategory)
+    : prompts;
 
   const handleUsePrompt = (prompt: WritingPrompt) => {
-    onCreateFromPrompt(prompt);
-  };
-
-  const handleRandomPrompt = () => {
-    getRandomPrompt().then(({ data }) => {
-      if (data) {
-        handleUsePrompt(data);
-      }
-    });
+    if (onCreateFromPrompt) {
+      onCreateFromPrompt(prompt);
+    }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-foreground mb-2">Writing Inspiration</h2>
-        <p className="text-muted-foreground mb-4">
-          Find your next story, poem, or reflection with these curated prompts
+    <div className="h-full flex flex-col">
+      {/* Header */}
+      <div className="p-6 border-b border-border">
+        <div className="flex items-center gap-2 mb-4">
+          <Sparkles className="w-6 h-6 text-purple-400" />
+          <h2 className="text-2xl font-bold">Writing Prompts</h2>
+        </div>
+        <p className="text-muted-foreground">
+          Spark your creativity with thoughtful prompts designed to help you explore your inner world.
         </p>
-        <Button onClick={handleRandomPrompt} className="mb-6">
-          <Shuffle className="w-4 h-4 mr-2" />
-          Surprise Me
-        </Button>
       </div>
 
-      <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-        <TabsList className="grid grid-cols-4 md:grid-cols-7 gap-1">
-          <TabsTrigger value="all">All</TabsTrigger>
+      {/* Category Filter */}
+      <div className="p-6 border-b border-border">
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant={selectedCategory === null ? "default" : "outline"}
+            size="sm"
+            onClick={() => setSelectedCategory(null)}
+          >
+            All Prompts
+          </Button>
           {categories.map(category => (
-            <TabsTrigger key={category} value={category.toLowerCase()}>
+            <Button
+              key={category}
+              variant={selectedCategory === category ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedCategory(category)}
+            >
               {category}
-            </TabsTrigger>
+            </Button>
           ))}
-        </TabsList>
+        </div>
+      </div>
 
-        <TabsContent value={selectedCategory} className="mt-6">
-          <div className="grid gap-4 md:grid-cols-2">
-            {filteredPrompts.map((prompt) => (
-              <Card key={prompt.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <CardTitle className="text-lg">{prompt.title}</CardTitle>
-                    <div className="flex gap-2">
-                      <Badge variant="secondary">{prompt.category}</Badge>
-                      {prompt.isBookPassage && (
-                        <Badge variant="outline" className="text-primary">
-                          <BookOpen className="w-3 h-3 mr-1" />
-                          Book
-                        </Badge>
-                      )}
+      {/* Prompts Grid */}
+      <ScrollArea className="flex-1 p-6">
+        <div className="grid gap-4 md:grid-cols-2">
+          {filteredPrompts.map((prompt) => {
+            const DifficultyIcon = difficultyIcons[prompt.difficulty];
+            return (
+              <Card key={prompt.id} className="group hover:shadow-lg transition-all duration-300 bg-card/50 backdrop-blur">
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <CardTitle className="text-lg group-hover:text-purple-400 transition-colors">
+                        {prompt.title}
+                      </CardTitle>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge className={categoryColors[prompt.category]}>
+                        {prompt.category}
+                      </Badge>
+                      <div className="flex items-center gap-1 text-muted-foreground">
+                        <DifficultyIcon className="w-4 h-4" />
+                        <span className="text-xs">{prompt.difficulty}</span>
+                      </div>
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground mb-4 leading-relaxed">
+                <CardContent className="space-y-4">
+                  <CardDescription className="leading-relaxed">
                     {prompt.content}
-                  </p>
-                  {prompt.isBookPassage && prompt.bookReference && (
-                    <p className="text-xs text-primary italic mb-4">
-                      — from: {prompt.bookReference}
-                    </p>
-                  )}
-                  <Button 
-                    onClick={() => handleUsePrompt(prompt)} 
-                    className="w-full"
-                    variant="outline"
-                  >
-                    <PenTool className="w-4 h-4 mr-2" />
-                    Start Writing
-                  </Button>
+                  </CardDescription>
+                  
+                  <div className="flex items-center gap-2">
+                    <Button 
+                      onClick={() => handleUsePrompt(prompt)}
+                      className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                    >
+                      <PenTool className="w-4 h-4 mr-2" />
+                      Start Writing
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
+            );
+          })}
+        </div>
+      </ScrollArea>
 
-      {filteredPrompts.length === 0 && (
-        <div className="text-center py-8">
-          <Heart className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <p className="text-muted-foreground">
-            No prompts found for this category. Try selecting "All" to see all available prompts.
+      {/* Footer */}
+      <div className="p-6 border-t border-border bg-card/30 backdrop-blur">
+        <div className="text-center text-sm text-muted-foreground">
+          <p className="mb-2">💜 These prompts are crafted with love to help you connect with your inner voice.</p>
+          <p className="flex items-center justify-center gap-1">
+            <Heart className="w-4 h-4 text-pink-400" />
+            Made for Rei's writing journey
           </p>
         </div>
-      )}
+      </div>
     </div>
   );
 }

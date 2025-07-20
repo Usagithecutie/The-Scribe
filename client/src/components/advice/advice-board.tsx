@@ -1,140 +1,194 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shuffle, Heart, BookOpen, Coffee, Moon, Sparkles, User } from "lucide-react";
-import { AdviceEntry } from "@shared/schema";
+import { Button } from "@/components/ui/button";
+import { Heart, Star, Sparkles, Coffee, Sun, Moon } from "lucide-react";
+
+interface AdviceCard {
+  id: string;
+  title: string;
+  content: string;
+  category: "Writing" | "Life" | "Love" | "Growth" | "Daily";
+  mood: "Gentle" | "Motivating" | "Reflective" | "Uplifting";
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+const adviceCards: AdviceCard[] = [
+  {
+    id: "write-from-heart",
+    title: "Write from Your Heart, Not Your Head",
+    content: "The most beautiful writing comes from authentic emotion. Don't worry about perfect grammar or structure in your first draft. Let your heart speak first, then let your mind edit later. Your vulnerability is your strength.",
+    category: "Writing",
+    mood: "Gentle",
+    icon: Heart
+  },
+  {
+    id: "embrace-imperfection",
+    title: "Embrace the Beautiful Mess",
+    content: "Your first draft doesn't need to be perfect. In fact, it shouldn't be. Perfection kills creativity. Write messily, write badly, write authentically. You can always polish a rough diamond, but you can't create something from nothing.",
+    category: "Writing",
+    mood: "Motivating",
+    icon: Sparkles
+  },
+  {
+    id: "daily-pages",
+    title: "Morning Pages: Your Daily Reset",
+    content: "Try writing three pages every morning - just stream of consciousness. No topic, no goal, just pure brain dump. This clears mental clutter and often reveals surprising insights about what's really on your mind.",
+    category: "Daily",
+    mood: "Uplifting",
+    icon: Sun
+  },
+  {
+    id: "self-compassion",
+    title: "Be Gentle with Your Creative Soul",
+    content: "Writing takes courage. Every time you put words on paper, you're being vulnerable. Treat yourself with the same kindness you'd show a dear friend. Your creative voice deserves love and patience, especially from you.",
+    category: "Growth",
+    mood: "Gentle",
+    icon: Heart
+  },
+  {
+    id: "small-moments",
+    title: "Find Magic in Ordinary Moments",
+    content: "The best stories often come from the smallest moments - the way morning light hits your coffee cup, a stranger's smile, the sound of rain. Train yourself to notice these tiny miracles. They're everywhere, waiting to be written.",
+    category: "Life",
+    mood: "Reflective",
+    icon: Star
+  },
+  {
+    id: "write-for-yourself",
+    title: "Write the Story You Need to Read",
+    content: "Don't write to impress others or follow trends. Write the words you need to hear, the story you wish existed, the advice you needed when you were younger. Authentic writing always finds its audience.",
+    category: "Writing",
+    mood: "Motivating",
+    icon: Sparkles
+  },
+  {
+    id: "rest-is-creative",
+    title: "Rest is Part of the Creative Process",
+    content: "You don't have to write every day to be a 'real' writer. Sometimes your creativity needs to recharge. Take walks, read books, have conversations, live life. All of it feeds your writing in ways you can't imagine.",
+    category: "Growth",
+    mood: "Gentle",
+    icon: Moon
+  },
+  {
+    id: "trust-your-voice",
+    title: "Your Voice Matters",
+    content: "In a world full of noise, your unique perspective is needed. Don't try to sound like anyone else. The world has enough of them - what it needs is the first and only you. Trust that your voice has value.",
+    category: "Love",
+    mood: "Uplifting",
+    icon: Star
+  }
+];
+
+const categoryColors = {
+  Writing: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
+  Life: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200", 
+  Love: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200",
+  Growth: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200",
+  Daily: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200"
+};
+
+const moodColors = {
+  Gentle: "text-rose-400",
+  Motivating: "text-orange-400", 
+  Reflective: "text-indigo-400",
+  Uplifting: "text-emerald-400"
+};
 
 export function AdviceBoard() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const { data: allAdvice = [] } = useQuery<AdviceEntry[]>({
-    queryKey: ["/api/advice"],
-  });
-
-  const { data: randomAdvice, refetch: getRandomAdvice } = useQuery<AdviceEntry>({
-    queryKey: ["/api/advice/random"],
-    enabled: false,
-  });
-
-  const filteredAdvice = selectedCategory === "all" 
-    ? allAdvice 
-    : allAdvice.filter(entry => entry.category.toLowerCase() === selectedCategory);
-
-  const categories = Array.from(new Set(allAdvice.map(a => a.category)));
-
-  const handleRandomAdvice = () => {
-    getRandomAdvice();
-  };
-
-  const getCategoryIcon = (category: string) => {
-    switch (category.toLowerCase()) {
-      case 'self-care': return <Coffee className="w-4 h-4" />;
-      case 'rest': return <Moon className="w-4 h-4" />;
-      case 'comfort': return <Heart className="w-4 h-4" />;
-      case 'grounding': return <Sparkles className="w-4 h-4" />;
-      case 'self-acceptance': return <User className="w-4 h-4" />;
-      default: return <Heart className="w-4 h-4" />;
-    }
-  };
+  const categories = Array.from(new Set(adviceCards.map(card => card.category)));
+  const filteredCards = selectedCategory
+    ? adviceCards.filter(card => card.category === selectedCategory)
+    : adviceCards;
 
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-foreground mb-2">Your Advice Board</h2>
-        <p className="text-muted-foreground mb-4">
-          Gentle reminders and wisdom for when you need a soft place to rest your heart
+    <div className="h-full flex flex-col">
+      {/* Header */}
+      <div className="p-6 border-b border-border">
+        <div className="flex items-center gap-2 mb-4">
+          <Heart className="w-6 h-6 text-pink-400" />
+          <h2 className="text-2xl font-bold">Writing Wisdom</h2>
+        </div>
+        <p className="text-muted-foreground">
+          Gentle guidance and encouragement for your writing journey. Remember: you are already enough.
         </p>
-        <Button onClick={handleRandomAdvice} className="mb-6">
-          <Shuffle className="w-4 h-4 mr-2" />
-          Daily Wisdom
-        </Button>
       </div>
 
-      {randomAdvice && (
-        <Card className="border-primary/20 bg-primary/5 mb-6">
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-primary" />
-              <CardTitle className="text-primary">Today's Gentle Reminder</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <h3 className="font-semibold text-lg mb-3">{randomAdvice.title}</h3>
-            <p className="text-muted-foreground leading-relaxed mb-4">
-              {randomAdvice.content}
-            </p>
-            {randomAdvice.isBookReference && randomAdvice.bookReference && (
-              <p className="text-xs text-primary italic">
-                — from: {randomAdvice.bookReference}
-              </p>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-        <TabsList className="grid grid-cols-4 md:grid-cols-6 gap-1">
-          <TabsTrigger value="all">All</TabsTrigger>
+      {/* Category Filter */}
+      <div className="p-6 border-b border-border">
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant={selectedCategory === null ? "default" : "outline"}
+            size="sm"
+            onClick={() => setSelectedCategory(null)}
+          >
+            All Wisdom
+          </Button>
           {categories.map(category => (
-            <TabsTrigger key={category} value={category.toLowerCase()}>
+            <Button
+              key={category}
+              variant={selectedCategory === category ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedCategory(category)}
+            >
               {category}
-            </TabsTrigger>
+            </Button>
           ))}
-        </TabsList>
+        </div>
+      </div>
 
-        <TabsContent value={selectedCategory} className="mt-6">
-          <div className="grid gap-4 md:grid-cols-2">
-            {filteredAdvice.map((advice) => (
-              <Card key={advice.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      {getCategoryIcon(advice.category)}
-                      {advice.title}
-                    </CardTitle>
-                    <div className="flex gap-2 flex-shrink-0">
-                      <Badge variant="secondary">{advice.category}</Badge>
-                      {advice.actionable && (
-                        <Badge variant="outline" className="text-green-600 border-green-600">
-                          Actionable
+      {/* Advice Cards */}
+      <ScrollArea className="flex-1 p-6">
+        <div className="grid gap-4 md:grid-cols-2">
+          {filteredCards.map((card) => {
+            const IconComponent = card.icon;
+            return (
+              <Card key={card.id} className="group hover:shadow-lg transition-all duration-300 bg-card/50 backdrop-blur">
+                <CardHeader className="pb-3">
+                  <div className="flex items-start gap-3">
+                    <div className={`p-2 rounded-full bg-muted/50 ${moodColors[card.mood]}`}>
+                      <IconComponent className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle className="text-lg group-hover:text-purple-400 transition-colors">
+                        {card.title}
+                      </CardTitle>
+                      <div className="flex items-center gap-2 mt-2">
+                        <Badge className={categoryColors[card.category]}>
+                          {card.category}
                         </Badge>
-                      )}
-                      {advice.isBookReference && (
-                        <Badge variant="outline" className="text-primary">
-                          <BookOpen className="w-3 h-3 mr-1" />
-                          Book
-                        </Badge>
-                      )}
+                        <span className={`text-xs ${moodColors[card.mood]} font-medium`}>
+                          {card.mood}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground leading-relaxed mb-4">
-                    {advice.content}
-                  </p>
-                  {advice.isBookReference && advice.bookReference && (
-                    <p className="text-xs text-primary italic">
-                      — from: {advice.bookReference}
-                    </p>
-                  )}
+                  <CardDescription className="leading-relaxed text-base">
+                    {card.content}
+                  </CardDescription>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
+            );
+          })}
+        </div>
+      </ScrollArea>
 
-      {filteredAdvice.length === 0 && (
-        <div className="text-center py-8">
-          <Heart className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <p className="text-muted-foreground">
-            No advice found for this category. Try selecting "All" to see all available wisdom.
+      {/* Footer */}
+      <div className="p-6 border-t border-border bg-card/30 backdrop-blur">
+        <div className="text-center text-sm text-muted-foreground">
+          <p className="mb-2">🌸 Every writer's journey is unique and beautiful.</p>
+          <p className="flex items-center justify-center gap-1">
+            <Coffee className="w-4 h-4 text-amber-400" />
+            Take what serves you, leave what doesn't
+            <Heart className="w-4 h-4 text-pink-400" />
           </p>
         </div>
-      )}
+      </div>
     </div>
   );
 }

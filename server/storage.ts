@@ -224,10 +224,10 @@ export class MemStorage implements IStorage {
     const now = new Date();
     const doc: Document = {
       id,
-      title: insertDoc.title,
-      content: insertDoc.content,
-      wordCount: insertDoc.wordCount,
-      characterCount: insertDoc.characterCount,
+      title: insertDoc.title || "Untitled Document",
+      content: insertDoc.content || "",
+      wordCount: insertDoc.wordCount || 0,
+      characterCount: insertDoc.characterCount || 0,
       createdAt: now,
       updatedAt: now,
     };
@@ -394,6 +394,5 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-export const storage = process.env.NODE_ENV === 'production' || process.env.DATABASE_URL 
-  ? new DatabaseStorage() 
-  : new MemStorage();
+// Use database storage if DATABASE_URL is available (Vercel deployment), otherwise use memory storage
+export const storage = process.env.DATABASE_URL ? new DatabaseStorage() : new MemStorage();

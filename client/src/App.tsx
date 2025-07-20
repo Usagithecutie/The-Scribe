@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import BirthdayPage from "@/pages/birthday";
 import EditorPage from "@/pages/editor";
+import BookReader from "@/pages/book-reader";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -13,6 +14,8 @@ function Router() {
     <Switch>
       <Route path="/" component={BirthdayPage} />
       <Route path="/editor" component={EditorPage} />
+      <Route path="/book" component={BookReader} />
+      <Route path="/book/:sectionId" component={BookReader} />
       <Route component={NotFound} />
     </Switch>
   );
