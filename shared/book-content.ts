@@ -97,21 +97,147 @@ You are a poem. And the world is reading you.
         title: "Love as Something Steady",
         sectionNumber: "Page 1",
         category: "Love & Longing",
-        content: "The depth of human connection, love in all its forms."
+        content: `Love is not meant to be fleeting,
+Not meant to be a passing storm
+That rages and disappears,
+Leaving wreckage in its wake.
+
+Love is the steady rain
+That softens the earth,
+The quiet presence
+That does not demand to be seen
+Yet is always felt.
+
+Love is not just passion.
+It is presence.
+
+It is choosing—
+Day after day,
+Moment after moment,
+To stay.
+
+Even when the fire of newness fades,
+Even when life grows heavy,
+Even when the road is long
+And uncertain.
+
+Love is the hand
+That reaches for yours in the dark.
+The voice that says,
+"You do not have to walk alone."
+
+It is not perfect,
+But it does not leave.
+It does not break at the first sign of struggle.
+It does not retreat when the world becomes too much.
+
+Love stays.
+Even when it is quiet.
+Even when it is not easy.
+Even when it has to be chosen,
+Again and again.
+
+Because love,
+True love,
+Is not just about feeling.
+It is about being.
+
+And it is steady,
+Even when everything else is not.`
       },
       {
         id: "love-chooses",
         title: "Love That Chooses You Fully",
         sectionNumber: "Page 2", 
         category: "Love & Longing",
-        content: "Love that doesn't ask you to be smaller, love that doesn't require you to dim your light."
+        content: `Love should never be a half-written story,
+A hesitation,
+A feeling that lingers in the air
+But never lands.
+
+You deserve a love
+That does not flinch when the world gets heavy.
+A love that does not step back
+When the waters rise.
+A love that does not make you wonder
+If you are enough.
+
+Because love—real love—chooses.
+
+It chooses you in the morning light,
+When your hair is messy
+And your eyes are still full of dreams.
+It chooses you in the midnight silence,
+When your fears slip between the sheets like shadows.
+It chooses you on the easy days and the impossible ones,
+Not because it has to,
+But because it cannot imagine a world where it does not.
+
+Love is not meant to be guessed at.
+It is not meant to be chased,
+Bargained for,
+Or questioned.
+
+If you have to wonder
+Whether love is choosing you,
+Then it is already telling you the answer.
+
+And you—
+You deserve the kind of love
+That stands firm,
+That meets you where you are,
+That takes your hand and says,
+
+"No matter what, I choose you."`
       },
       {
         id: "love-finds-way",
         title: "Love Will Find Its Way to You",
         sectionNumber: "Page 3",
         category: "Love & Longing", 
-        content: "Even when you feel unlovable, love has a way of finding you."
+        content: `Love will find its way to you.
+
+Love does not always arrive
+When you are ready for it.
+It does not knock politely,
+Waiting for permission to enter.
+
+It comes as the tide—
+Gentle some days, relentless on others,
+Pulling at your shores
+Even when you swore you would never let it in again.
+
+Love finds you in the quiet moments,
+In laughter you didn't expect,
+In the warmth of a hand reaching for yours
+When you weren't looking for comfort.
+
+It does not always come
+Wrapped in the certainty you imagined.
+Sometimes, it comes softly,
+A whisper instead of a declaration,
+A quiet presence instead of a grand entrance.
+
+And love, real love,
+Does not demand that you be unbroken to receive it.
+It does not ask you to be perfect,
+To be fearless,
+To be anything other than who you are.
+
+It simply arrives.
+And stays.
+
+So when love finds you,
+Let it.
+
+Let it soften the places inside you
+That have turned to stone.
+Let it remind you
+That you were never meant to do this alone.
+Let it be what it was always meant to be—
+
+Not a storm,
+But a home.`
       },
       {
         id: "love-secure",

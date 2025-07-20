@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
-import { useTheme } from "@/hooks/use-theme";
+import { useTheme } from "@/components/theme-provider";
 import { Sun, Moon } from "lucide-react";
 
 export default function BirthdayPage() {

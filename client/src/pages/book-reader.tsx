@@ -16,7 +16,7 @@ import {
   Bookmark,
   Share
 } from "lucide-react";
-import { useTheme } from "@/hooks/use-theme";
+import { useTheme } from "@/components/theme-provider";
 
 // Book content extracted from the uploaded document
 const bookSections = [

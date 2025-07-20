@@ -251,7 +251,7 @@ export function EnhancedSidebar({
   }
 
   return (
-    <div className="w-80 bg-card/50 backdrop-blur border-r border-border flex flex-col h-full">
+    <div className="w-80 glass border-r border-border/30 flex flex-col h-full relative z-20">
       {/* Header */}
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between mb-4">

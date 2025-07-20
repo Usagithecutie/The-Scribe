@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { EnhancedRichTextEditor, type EditorRef } from "@/components/editor/enhanced-rich-text-editor";
 import { EnhancedToolbar } from "@/components/editor/enhanced-toolbar";
 import { EnhancedSidebar } from "@/components/sidebar/enhanced-sidebar";
-import { useTheme } from "@/hooks/use-theme";
+import { useTheme } from "@/components/theme-provider";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { apiRequest } from "@/lib/queryClient";
 import { Document, insertDocumentSchema, type InsertDocument } from "@shared/schema";
@@ -330,7 +330,11 @@ export default function EnhancedEditor() {
   }, [documentsLoading, documents.length]);
 
   return (
-    <div className="h-screen flex bg-gradient-to-br from-slate-950 via-purple-950/20 to-slate-950">
+    <div className="h-screen flex bg-gradient-to-br from-slate-950 via-purple-950/20 to-slate-950 relative">
+      {/* Cosmic background effects */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(120,119,198,0.15),transparent),radial-gradient(circle_at_80%_20%,rgba(255,119,198,0.15),transparent),radial-gradient(circle_at_40%_40%,rgba(120,200,255,0.1),transparent)]"></div>
+      </div>
       {/* Enhanced Sidebar */}
       <EnhancedSidebar
         documents={activeDocuments}
@@ -351,9 +355,9 @@ export default function EnhancedEditor() {
       />
 
       {/* Main Editor */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden relative z-10">
         {/* Header */}
-        <div className="bg-card/50 backdrop-blur border-b border-border px-4 py-3">
+        <div className="glass border-b border-border/30 px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {!sidebarOpen && (
@@ -371,7 +375,7 @@ export default function EnhancedEditor() {
                 <Input
                   value={title}
                   onChange={(e) => handleTitleChange(e.target.value)}
-                  className="text-lg font-semibold bg-transparent border-none p-0 h-auto focus-visible:ring-0"
+                  className="text-lg font-semibold bg-transparent border-none p-0 h-auto focus-visible:ring-0 text-white placeholder:text-white/60"
                   placeholder="Document title..."
                 />
                 {hasUnsavedChanges && (
@@ -451,7 +455,7 @@ export default function EnhancedEditor() {
         </div>
 
         {/* Status Bar */}
-        <div className="bg-card/30 backdrop-blur border-t border-border px-4 py-2">
+        <div className="glass border-t border-border/30 px-4 py-2">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <div className="flex items-center gap-4">
               <span>{wordCount} words • {charCount} characters</span>
