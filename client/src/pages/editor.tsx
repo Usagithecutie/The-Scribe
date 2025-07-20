@@ -223,7 +223,7 @@ export default function EditorPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-          <p className="mt-4 text-muted-foreground">Loading your writing sanctuary...</p>
+          <p className="mt-4 text-muted-foreground">Loading your personal world...</p>
         </div>
       </div>
     );
@@ -245,7 +245,7 @@ export default function EditorPage() {
             </Button>
             <div className="flex items-center space-x-2">
               <span className="text-xl">🪶</span>
-              <span className="font-semibold text-lg">Rei's Writing Sanctuary</span>
+              <span className="font-semibold text-lg">Your Own Personal World</span>
               <span className="text-primary">🎀</span>
             </div>
           </div>
@@ -387,7 +387,7 @@ export default function EditorPage() {
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
                 <span className="text-6xl mb-4 block">📝</span>
-                <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome to your Writing Sanctuary</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome to Your Own Personal World</h2>
                 <p className="text-muted-foreground mb-6">Create your first document to start writing</p>
                 <Button onClick={handleNewDocument} className="bg-primary hover:bg-primary/90">
                   Create New Document

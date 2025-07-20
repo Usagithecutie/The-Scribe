@@ -1,4 +1,6 @@
 import { documents, userPreferences, writingPrompts, adviceEntries, type Document, type InsertDocument, type UpdateDocument, type UserPreferences, type InsertUserPreferences, type WritingPrompt, type InsertWritingPrompt, type AdviceEntry, type InsertAdviceEntry } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // Document operations
@@ -221,8 +223,11 @@ export class MemStorage implements IStorage {
     const id = this.currentDocId++;
     const now = new Date();
     const doc: Document = {
-      ...insertDoc,
       id,
+      title: insertDoc.title,
+      content: insertDoc.content,
+      wordCount: insertDoc.wordCount,
+      characterCount: insertDoc.characterCount,
       createdAt: now,
       updatedAt: now,
     };
@@ -315,4 +320,80 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database Storage Implementation
+export class DatabaseStorage implements IStorage {
+  async createDocument(insertDoc: InsertDocument): Promise<Document> {
+    const [doc] = await db.insert(documents).values(insertDoc).returning();
+    return doc;
+  }
+
+  async getDocument(id: number): Promise<Document | undefined> {
+    const [doc] = await db.select().from(documents).where(eq(documents.id, id));
+    return doc || undefined;
+  }
+
+  async getAllDocuments(): Promise<Document[]> {
+    return await db.select().from(documents).orderBy(documents.updatedAt);
+  }
+
+  async updateDocument(id: number, updates: UpdateDocument): Promise<Document | undefined> {
+    const [doc] = await db.update(documents).set({
+      ...updates,
+      updatedAt: new Date()
+    }).where(eq(documents.id, id)).returning();
+    return doc || undefined;
+  }
+
+  async deleteDocument(id: number): Promise<boolean> {
+    const result = await db.delete(documents).where(eq(documents.id, id));
+    return (result.rowCount || 0) > 0;
+  }
+
+  async getUserPreferences(): Promise<UserPreferences | undefined> {
+    const [prefs] = await db.select().from(userPreferences).limit(1);
+    return prefs || undefined;
+  }
+
+  async updateUserPreferences(prefs: InsertUserPreferences): Promise<UserPreferences> {
+    const existing = await this.getUserPreferences();
+    if (existing) {
+      const [updated] = await db.update(userPreferences).set(prefs).where(eq(userPreferences.id, existing.id)).returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(userPreferences).values(prefs).returning();
+      return created;
+    }
+  }
+
+  async getAllWritingPrompts(): Promise<WritingPrompt[]> {
+    return await db.select().from(writingPrompts).orderBy(writingPrompts.createdAt);
+  }
+
+  async getWritingPromptsByCategory(category: string): Promise<WritingPrompt[]> {
+    return await db.select().from(writingPrompts).where(eq(writingPrompts.category, category)).orderBy(writingPrompts.createdAt);
+  }
+
+  async getRandomWritingPrompt(): Promise<WritingPrompt | undefined> {
+    const prompts = await db.select().from(writingPrompts);
+    if (prompts.length === 0) return undefined;
+    return prompts[Math.floor(Math.random() * prompts.length)];
+  }
+
+  async getAllAdviceEntries(): Promise<AdviceEntry[]> {
+    return await db.select().from(adviceEntries).orderBy(adviceEntries.createdAt);
+  }
+
+  async getAdviceEntriesByCategory(category: string): Promise<AdviceEntry[]> {
+    return await db.select().from(adviceEntries).where(eq(adviceEntries.category, category)).orderBy(adviceEntries.createdAt);
+  }
+
+  async getRandomAdviceEntry(): Promise<AdviceEntry | undefined> {
+    const entries = await db.select().from(adviceEntries);
+    if (entries.length === 0) return undefined;
+    return entries[Math.floor(Math.random() * entries.length)];
+  }
+}
+
+export const storage = process.env.NODE_ENV === 'production' || process.env.DATABASE_URL 
+  ? new DatabaseStorage() 
+  : new MemStorage();
