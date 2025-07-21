@@ -37,6 +37,10 @@ export default function EnhancedEditor() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  // Get document ID from URL params
+  const searchParams = new URLSearchParams(window.location.search);
+  const urlDocumentId = searchParams.get('id');
   
   const editorRef = useRef<EditorRef>(null);
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);

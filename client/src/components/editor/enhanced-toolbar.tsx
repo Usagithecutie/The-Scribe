@@ -116,10 +116,10 @@ export function EnhancedToolbar({ editor, onSave, onExport, isSaving }: Enhanced
   );
 
   return (
-    <div className="sticky top-0 z-10 bg-gradient-to-r from-slate-900/95 via-purple-900/95 to-slate-900/95 backdrop-blur-xl border-b border-border/50">
+    <div className="sticky top-0 z-10 bg-gradient-to-r from-slate-900/95 via-purple-900/95 to-slate-900/95 backdrop-blur-xl border-b border-border/50 dark:bg-gradient-to-r dark:from-slate-900/95 dark:via-purple-900/95 dark:to-slate-900/95 bg-gradient-to-r from-white/95 via-purple-50/95 to-white/95">
       {/* Dynamic Island Style Container */}
       <div className="flex items-center justify-center p-4">
-        <div className="flex items-center gap-1 p-2 bg-black/40 backdrop-blur-xl rounded-full border border-white/10 shadow-2xl">
+        <div className="flex items-center gap-1 p-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/30 bg-black/40 backdrop-blur-xl rounded-full border border-white/10 shadow-2xl dark:bg-black/40 dark:border-white/10 light:bg-white/60 light:border-purple-200/40 max-w-full min-w-0">
           {/* File Operations */}
           <div className="flex items-center gap-1 px-2">
             <DynamicButton onClick={onSave} title="Save" isActive={isSaving}>

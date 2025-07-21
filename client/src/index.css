@@ -24,6 +24,12 @@
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
   
+  /* Light theme glass morphism */
+  --light-cosmic-bg: linear-gradient(135deg, hsl(0, 0%, 100%) 0%, hsl(272, 20%, 98%) 50%, hsl(280, 15%, 96%) 100%);
+  --light-glass-bg: rgba(255, 255, 255, 0.7);
+  --light-glass-border: rgba(148, 163, 184, 0.2);
+  --light-glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  
   /* Custom purple theme colors */
   --purple-50: hsl(276, 100%, 99%);
   --purple-100: hsl(274, 100%, 97%);
@@ -89,8 +95,15 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
-    background: var(--cosmic-bg);
     min-height: 100vh;
+  }
+  
+  body.dark {
+    background: var(--cosmic-bg);
+  }
+  
+  body:not(.dark) {
+    background: var(--light-cosmic-bg);
   }
 
   /* Glass morphism effects */

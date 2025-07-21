@@ -143,6 +143,48 @@ Is not just about feeling.
 It is about being.
 
 And it is steady,
+Even when everything else is not.
+The voice that says,
+"You do not have to walk alone."
+
+It is not perfect,
+But it does not leave.
+It does not break at the first sign of struggle.
+It does not retreat when the world becomes too much.
+
+Love stays.
+Even when it is quiet.
+Even when it is not easy.
+Even when it has to be chosen,
+Again and again.
+
+Because love,
+True love,
+Is not just about feeling.
+It is about being.
+
+And it is steady,
+Even when everything else is not.
+The voice that says,
+"You do not have to walk alone."
+
+It is not perfect,
+But it does not leave.
+It does not break at the first sign of struggle.
+It does not retreat when the world becomes too much.
+
+Love stays.
+Even when it is quiet.
+Even when it is not easy.
+Even when it has to be chosen,
+Again and again.
+
+Because love,
+True love,
+Is not just about feeling.
+It is about being.
+
+And it is steady,
 Even when everything else is not.`
       },
       {
