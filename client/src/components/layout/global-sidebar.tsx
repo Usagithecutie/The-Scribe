@@ -15,7 +15,7 @@ export function GlobalSidebar({ isOpen, onToggle }: GlobalSidebarProps) {
   const navItems = [
     { href: "/", label: "Home", icon: Home },
     { href: "/sanctuary", label: "Document Sanctuary", icon: PenTool },
-    { href: "/book", label: "You Are A Poem", icon: BookOpen },
+    { href: "/book", label: "You Are A Poem And The World Is Reading You", icon: BookOpen },
   ];
 
   return (

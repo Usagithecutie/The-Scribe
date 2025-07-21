@@ -158,73 +158,73 @@ export function EnhancedBookReader({ initialSectionId, initialChapterId }: Enhan
                           className={`w-full text-left p-3 rounded-lg text-sm transition-all hover:bg-muted/50 ${
                             currentSectionIndex === sectionIndex && currentChapterIndex === chapterIndex
                               ? 'bg-primary/10 text-primary border border-primary/20'
-                              : 'text-muted-foreground hover:text-foreground'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium">{chapter.title}</span>
-                            <Badge variant="secondary" className="text-xs">
-                              {chapter.sectionNumber}
-                            </Badge>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
+                            : 'text-slate-300 hover:bg-purple-500/10 hover:text-purple-300'
+                        }`}
+                      >
+                        <div className="font-medium">{chapter.sectionNumber}</div>
+                        <div className="text-xs opacity-80 line-clamp-1">{chapter.title}</div>
+                      </button>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </ScrollArea>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+
+          {/* Sidebar Footer */}
+          <div className="p-4 border-t border-border/30">
+            <Link href="/">
+              <Button variant="outline" size="sm" className="w-full">
+                <Home className="w-4 h-4 mr-2" />
+                Back to Writing Sanctuary
+              </Button>
+            </Link>
           </div>
         </div>
+      </div>
 
-        {/* Main Reading Area */}
-        <div className="flex-1 lg:ml-0">
-          <div className="max-w-4xl mx-auto px-4 py-8">
-            {/* Chapter Header */}
-            <div className="mb-8 text-center">
-              <Badge variant="outline" className="mb-4">
-                {currentChapter?.sectionNumber}
-              </Badge>
-              <h1 className="text-3xl font-bold mb-2">{currentChapter?.title}</h1>
-              <p className="text-muted-foreground">{currentSection?.title}</p>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col relative z-10">
+        {/* Header */}
+        <div className="glass border-b border-border/30 p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSidebarOpen(true)}
+                className="lg:hidden text-purple-300 hover:text-purple-200"
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
+              
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-purple-400" />
+                <h1 className="text-lg font-semibold text-white">You Are A Poem</h1>
+                <Badge variant="outline" className="text-xs border-purple-400/30 text-purple-300">
+                  by Zeke Iverson
+                </Badge>
+              </div>
             </div>
 
-            {/* Chapter Content */}
-            <Card className="mb-8">
-              <CardContent className="prose prose-lg dark:prose-invert max-w-none p-8">
-                <div className="whitespace-pre-wrap leading-relaxed">
-                  {currentChapter?.content}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Navigation */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
               <Button
-                variant="outline"
+                variant="ghost"
+                size="sm"
                 onClick={goToPreviousChapter}
                 disabled={!hasPreviousChapter}
-                className="gap-2"
+                className="text-purple-300 hover:text-purple-200 disabled:opacity-50"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Previous
               </Button>
-
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">
-                  {currentSectionIndex + 1} / {bookSections.length}
-                </span>
-                <span className="text-sm text-muted-foreground">•</span>
-                <span className="text-sm text-muted-foreground">
-                  {currentChapterIndex + 1} / {currentSection?.sections.length}
-                </span>
-              </div>
-
+              
               <Button
-                variant="outline"
+                variant="ghost"
+                size="sm"
                 onClick={goToNextChapter}
                 disabled={!hasNextChapter}
-                className="gap-2"
+                className="text-purple-300 hover:text-purple-200 disabled:opacity-50"
               >
                 Next
                 <ChevronRight className="w-4 h-4" />
@@ -232,7 +232,72 @@ export function EnhancedBookReader({ initialSectionId, initialChapterId }: Enhan
             </div>
           </div>
         </div>
+
+        {/* Chapter Content */}
+        <div className="flex-1 overflow-hidden">
+          <ScrollArea className="h-full">
+            <div className="max-w-4xl mx-auto p-8">
+              {currentChapter && (
+                <Card className="glass border-border/30">
+                  <CardHeader className="text-center pb-6">
+                    <div className="space-y-2">
+                      <Badge variant="outline" className="border-purple-400/30 text-purple-300">
+                        {currentSection.title}
+                      </Badge>
+                      <CardTitle className="text-2xl font-bold text-white">
+                        {currentChapter.title}
+                      </CardTitle>
+                      <p className="text-purple-300/80">{currentChapter.sectionNumber}</p>
+                    </div>
+                  </CardHeader>
+                  
+                  <CardContent className="prose prose-invert prose-purple max-w-none">
+                    <div className="text-slate-200 leading-relaxed whitespace-pre-line text-base">
+                      {currentChapter.content}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Navigation Footer */}
+              <div className="flex items-center justify-between mt-8 pt-6 border-t border-border/30">
+                <Button
+                  variant="outline"
+                  onClick={goToPreviousChapter}
+                  disabled={!hasPreviousChapter}
+                  className="flex items-center gap-2"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Previous Chapter
+                </Button>
+
+                <div className="flex items-center gap-2 text-sm text-purple-300">
+                  <Heart className="w-4 h-4" />
+                  <span>{currentSectionIndex + 1} of {bookSections.length} sections</span>
+                </div>
+
+                <Button
+                  variant="outline"
+                  onClick={goToNextChapter}
+                  disabled={!hasNextChapter}
+                  className="flex items-center gap-2"
+                >
+                  Next Chapter
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </ScrollArea>
+        </div>
       </div>
+
+      {/* Overlay for mobile sidebar */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
     </div>
   );
 }

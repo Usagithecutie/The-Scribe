@@ -6,6 +6,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import { TextStyle } from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import FontFamily from '@tiptap/extension-font-family';
+import Image from '@tiptap/extension-image';
 import { countWords, countCharacters } from '@/lib/editor-utils';
 
 export interface EditorRef {
@@ -36,6 +37,10 @@ export const EnhancedRichTextEditor = forwardRef<EditorRef, EnhancedRichTextEdit
         Color,
         FontFamily.configure({
           types: ['textStyle'],
+        }),
+        Image.configure({
+          inline: true,
+          allowBase64: true,
         }),
       ],
       content,

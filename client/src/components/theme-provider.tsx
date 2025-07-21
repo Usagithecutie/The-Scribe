@@ -32,13 +32,17 @@ export function ThemeProvider({
 
   useEffect(() => {
     const root = window.document.documentElement;
+    const body = window.document.body;
 
     root.classList.remove("light", "dark");
+    body.classList.remove("light", "dark");
 
     if (theme === "dark") {
       root.classList.add("dark");
+      body.classList.add("dark");
     } else {
       root.classList.add("light");
+      body.classList.add("light");
     }
   }, [theme]);
 

@@ -99,11 +99,11 @@
   }
   
   body.dark {
-    background: var(--cosmic-bg);
+    background: linear-gradient(135deg, hsl(224, 71%, 4%) 0%, hsl(260, 50%, 8%) 50%, hsl(272, 40%, 6%) 100%);
   }
   
   body:not(.dark) {
-    background: var(--light-cosmic-bg);
+    background: linear-gradient(135deg, hsl(0, 0%, 100%) 0%, hsl(272, 20%, 98%) 50%, hsl(280, 15%, 96%) 100%);
   }
 
   /* Glass morphism effects */
