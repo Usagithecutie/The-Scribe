@@ -446,16 +446,22 @@ export default function EnhancedEditor() {
           isSaving={saveDocumentMutation.isPending}
         />
 
-        {/* Editor Content */}
-        <div className="flex-1 overflow-hidden">
-          <EnhancedRichTextEditor
-            ref={editorRef}
-            content={content}
-            onChange={handleContentChange}
-            onWordCountChange={handleWordCountChange}
-            placeholder="Start writing your story..."
-            className="h-full"
-          />
+        {/* Editor Content - Dynamic Island Style */}
+        <div className="flex-1 overflow-hidden p-6">
+          <div className="max-w-4xl mx-auto h-full">
+            <div className="bg-black/30 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl h-full overflow-hidden">
+              <div className="p-8 h-full">
+                <EnhancedRichTextEditor
+                  ref={editorRef}
+                  content={content}
+                  onChange={handleContentChange}
+                  onWordCountChange={handleWordCountChange}
+                  placeholder="Start writing your story..."
+                  className="h-full prose prose-lg prose-invert max-w-none text-gray-200 focus:outline-none [&_*]:border-none [&_*]:outline-none"
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Status Bar */}

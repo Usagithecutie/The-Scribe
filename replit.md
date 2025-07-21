@@ -15,6 +15,13 @@ A beautiful writing application featuring:
 - **2025-01-21**: Made editor toolbar horizontally scrollable for mobile compatibility
 - **2025-01-21**: Extracted complete book content from DOCX file with all sections
 - **2025-01-21**: Implemented secure client/server separation with PostgreSQL database
+- **2025-01-21**: Restored original dark mode UI (removed white/purple gradient)
+- **2025-01-21**: Birthday page now serves as main landing page
+- **2025-01-21**: Document dashboard accessible via "Enter Your Sanctuary" button
+- **2025-01-21**: Enhanced editor with circular buttons and Dynamic Island-style text area
+- **2025-01-21**: Added global sidebar for book and navigation access across all pages
+- **2025-01-21**: Completed book content with Section II (Letting Go) and Final Section
+- **2025-01-21**: Implemented AppLayout component for consistent global navigation
 
 ## User Preferences
 - Clean, modern UI with glass morphism design
@@ -32,12 +39,14 @@ A beautiful writing application featuring:
 **Editor**: TipTap rich text editor
 
 ### Key Features Implemented:
-1. Document Dashboard - Beautiful card-based interface for document management
-2. Enhanced Editor - Rich text editing with scrollable toolbar
-3. Book Reader - Complete "You Are A Poem" book integration  
-4. Theme Support - Dark/light modes with glass morphism
-5. Mobile Responsive - Optimized for all screen sizes
-6. Auto-save - Automatic document saving every 30 seconds
+1. Birthday Landing Page - Personalized birthday greeting as main entrance
+2. Document Sanctuary - Beautiful card-based dashboard accessed from landing page
+3. Enhanced Editor - Rich text editing with circular buttons and Dynamic Island-style text area
+4. Book Reader - Complete "You Are A Poem" book integration with all sections
+5. Global Navigation - Sidebar accessible from all pages for seamless navigation
+6. Theme Support - Restored original dark mode with cosmic background
+7. Mobile Responsive - Optimized for all screen sizes with scrollable toolbar
+8. Auto-save - Automatic document saving every 30 seconds
 
 ## Database Schema
 - `documents` - User documents with content, metadata
@@ -45,10 +54,14 @@ A beautiful writing application featuring:
 - `writing_prompts` - Creative writing prompts
 - `advice_entries` - Self-care and guidance content
 
-## Migration Status
+## Project Status
 ✅ All migration tasks completed successfully
 ✅ Database provisioned and schema pushed
 ✅ Server running with no errors
 ✅ Frontend-backend integration working
-✅ Complete book content extracted and integrated
-✅ UI improvements implemented (dashboard, light mode, mobile toolbar)
+✅ Complete book content extracted and integrated with all sections
+✅ UI improvements implemented (dashboard, enhanced editor, global navigation)
+✅ Birthday landing page implemented as main entrance
+✅ Original dark mode UI restored
+✅ Dynamic Island-style editor with circular buttons implemented
+✅ Global sidebar for book and navigation access on all pages

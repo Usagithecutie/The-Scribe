@@ -156,7 +156,7 @@ export default function BirthdayPage() {
 
           <div className="text-center">
             <Button
-              onClick={handleEnterApp}
+              onClick={() => setLocation("/sanctuary")}
               size="lg"
               className="group bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-purple-500/25 transition-all duration-300"
             >
